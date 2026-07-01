@@ -4,7 +4,7 @@ export type ParsedTimeRange = {
 };
 
 const timeRangePattern =
-  /(\d{1,2}):(\d{2})\s*([AP]M)\s*-\s*(\d{1,2}):(\d{2})\s*([AP]M)/i;
+  /(\d{1,2})[:;](\d{2})\s*([AP]M)\s*[-–—]\s*(\d{1,2})[:;](\d{2})\s*([AP]M)/i;
 
 function toTwentyFourHour(hoursText: string, minutesText: string, period: string) {
   const hours = Number(hoursText);

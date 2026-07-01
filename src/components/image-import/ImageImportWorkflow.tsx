@@ -119,7 +119,12 @@ export function ImageImportWorkflow() {
 
     let isActive = true;
 
-    setIsProcessing(true);
+    queueMicrotask(() => {
+      if (isActive) {
+        setIsProcessing(true);
+      }
+    });
+
     createCroppedTableImage(imageUrl, crop, rotation, zoom)
       .then((nextPreview) => {
         if (isActive) {

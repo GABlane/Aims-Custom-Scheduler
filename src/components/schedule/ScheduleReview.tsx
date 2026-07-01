@@ -4,6 +4,12 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { ScheduleEntryForm } from "@/components/schedule/ScheduleEntryForm";
+import { recognizeImage, type OcrProgress } from "@/lib/ocr/recognize-image";
+import { parseScheduleText } from "@/lib/parser/parse-schedule";
+import {
+  loadImportedScheduleImage,
+  type ImportedScheduleImage,
+} from "@/lib/storage/import-image-storage";
 import {
   loadSavedSchedule,
   saveSchedule,
@@ -132,6 +138,11 @@ function getDuplicateCount(entries: ScheduleEntry[]) {
 
 export function ScheduleReview() {
   const [entries, setEntries] = useState<ScheduleEntry[]>(sampleScheduleEntries);
+  const [importedImage, setImportedImage] = useState<ImportedScheduleImage>();
+  const [ocrProgress, setOcrProgress] = useState<OcrProgress>();
+  const [ocrRawText, setOcrRawText] = useState("");
+  const [ocrError, setOcrError] = useState<string>();
+  const [isRecognizing, setIsRecognizing] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [saveStatus, setSaveStatus] = useState("Local draft ready");
   const conflicts = useMemo(() => getConflictMessages(entries), [entries]);
@@ -140,11 +151,16 @@ export function ScheduleReview() {
 
   useEffect(() => {
     const savedSchedule = loadSavedSchedule();
+    const savedImportedImage = loadImportedScheduleImage();
 
     queueMicrotask(() => {
       if (savedSchedule?.entries.length) {
         setEntries(savedSchedule.entries);
         setSaveStatus("Loaded saved local draft");
+      }
+
+      if (savedImportedImage) {
+        setImportedImage(savedImportedImage);
       }
 
       setIsInitialized(true);
@@ -218,8 +234,132 @@ export function ScheduleReview() {
     );
   }
 
+  async function runOcr() {
+    if (!importedImage) {
+      setOcrError("Import and crop a schedule table image first.");
+      return;
+    }
+
+    setIsRecognizing(true);
+    setOcrError(undefined);
+    setOcrRawText("");
+    setOcrProgress({
+      stage: "preparing",
+      progress: 0,
+      message: "Preparing image...",
+    });
+
+    try {
+      const ocrResult = await recognizeImage(
+        importedImage.imageDataUrl,
+        setOcrProgress,
+      );
+      const parsedSchedule = parseScheduleText(ocrResult.rawText);
+      const normalizedConfidence =
+        typeof ocrResult.confidence === "number"
+          ? Math.max(0.1, Math.min(0.99, ocrResult.confidence / 100))
+          : 0.65;
+
+      setOcrRawText(parsedSchedule.rawText);
+
+      if (parsedSchedule.entries.length === 0) {
+        setOcrError(
+          "OCR finished, but no schedule meetings were detected. Add entries manually or crop a clearer subject table.",
+        );
+        return;
+      }
+
+      setEntries(
+        parsedSchedule.entries.map((entry) => ({
+          ...entry,
+          confidence: normalizedConfidence,
+        })),
+      );
+      setSaveStatus(
+        `Imported ${parsedSchedule.entries.length} OCR entries. Please verify every field.`,
+      );
+    } catch (error) {
+      setOcrError(
+        error instanceof Error ? error.message : "Unable to read this schedule image.",
+      );
+    } finally {
+      setIsRecognizing(false);
+    }
+  }
+
   return (
     <section className="grid gap-5">
+      <div className="soft-panel grid gap-5 p-5 lg:grid-cols-[220px_1fr]">
+        <div className="overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--cream)]">
+          {importedImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={importedImage.imageDataUrl}
+              alt="Imported cropped schedule table"
+              className="h-full min-h-36 w-full object-contain"
+            />
+          ) : (
+            <div className="flex min-h-36 items-center justify-center px-4 text-center text-sm text-[var(--muted)]">
+              No cropped table image in this browser session.
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <h2 className="display-serif text-2xl">OCR import</h2>
+            <p className="muted-copy mt-1 text-sm leading-6">
+              Run text recognition on the cropped subject table, then review and
+              correct the detected meetings below.
+            </p>
+          </div>
+
+          {ocrProgress ? (
+            <div className="space-y-2">
+              <div className="h-2 overflow-hidden rounded-full bg-[var(--lavender)]">
+                <div
+                  className="h-full rounded-full bg-[var(--purple)] transition-all"
+                  style={{ width: `${ocrProgress.progress}%` }}
+                />
+              </div>
+              <p className="text-xs font-bold text-[var(--purple)]">
+                {ocrProgress.message}
+              </p>
+            </div>
+          ) : null}
+
+          {ocrError ? (
+            <p className="rounded-2xl border border-[#ffb7b7] bg-[#fff1f1] px-3 py-2 text-sm font-bold text-[#8a2a2a]">
+              {ocrError}
+            </p>
+          ) : null}
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              className="button-primary px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={!importedImage || isRecognizing}
+              onClick={runOcr}
+            >
+              {isRecognizing ? "Reading image..." : "Run OCR"}
+            </button>
+            <Link href="/import" className="button-secondary px-4 py-2 text-sm">
+              Crop another image
+            </Link>
+          </div>
+
+          {ocrRawText ? (
+            <details className="rounded-2xl border border-[var(--line)] bg-[var(--cream)] p-3">
+              <summary className="cursor-pointer text-sm font-bold">
+                Raw OCR text
+              </summary>
+              <pre className="mt-3 max-h-52 overflow-auto whitespace-pre-wrap text-xs leading-5 text-[var(--body)]">
+                {ocrRawText}
+              </pre>
+            </details>
+          ) : null}
+        </div>
+      </div>
+
       <div className="soft-panel flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="display-serif text-2xl">Detected meetings</h2>
