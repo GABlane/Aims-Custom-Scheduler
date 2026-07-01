@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useEffect } from "react";
 
 import { WeeklyGrid } from "@/components/schedule/WeeklyGrid";
 import { WallpaperControls } from "@/components/wallpaper/WallpaperControls";
@@ -9,6 +10,10 @@ import {
   downloadWallpaper,
   validateWallpaperExport,
 } from "@/lib/export/export-wallpaper";
+import {
+  loadSavedSchedule,
+  saveSchedule,
+} from "@/lib/storage/local-schedule-storage";
 import type { ScheduleEntry } from "@/types/schedule";
 import { DEVICE_PRESETS, type WallpaperDesign } from "@/types/wallpaper";
 
@@ -29,13 +34,42 @@ export function WallpaperBuilder({
   entries,
   initialDesign,
 }: WallpaperBuilderProps) {
+  const [scheduleEntries, setScheduleEntries] = useState(entries);
   const [design, setDesign] = useState(initialDesign);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [exportError, setExportError] = useState<string>();
   const validation = useMemo(
-    () => validateWallpaperExport({ entries, design }),
-    [entries, design],
+    () => validateWallpaperExport({ entries: scheduleEntries, design }),
+    [scheduleEntries, design],
   );
   const dimensions = getDimensions(design);
+
+  useEffect(() => {
+    const savedSchedule = loadSavedSchedule();
+
+    queueMicrotask(() => {
+      if (savedSchedule?.entries.length) {
+        setScheduleEntries(savedSchedule.entries);
+        setDesign(savedSchedule.design);
+      }
+
+      setIsInitialized(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
+    }
+
+    saveSchedule({
+      id: "local-draft",
+      name: "AIMS schedule draft",
+      entries: scheduleEntries,
+      design,
+      updatedAt: new Date().toISOString(),
+    });
+  }, [scheduleEntries, design, isInitialized]);
 
   function updateDesign(nextDesign: WallpaperDesign) {
     setExportError(undefined);
@@ -47,7 +81,7 @@ export function WallpaperBuilder({
 
     try {
       downloadWallpaper({
-        entries,
+        entries: scheduleEntries,
         design,
         filename: `aims-class-schedule-${design.devicePreset}.png`,
       });
@@ -95,8 +129,8 @@ export function WallpaperBuilder({
       </div>
 
       <div className="space-y-6">
-        <WallpaperPreview entries={entries} design={design} />
-        <WeeklyGrid entries={entries} timeFormat={design.timeFormat} />
+        <WallpaperPreview entries={scheduleEntries} design={design} />
+        <WeeklyGrid entries={scheduleEntries} timeFormat={design.timeFormat} />
       </div>
     </div>
   );

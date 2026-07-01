@@ -2,59 +2,10 @@ import Link from "next/link";
 
 import { AppNav } from "@/components/app/AppNav";
 import { WallpaperBuilder } from "@/components/wallpaper/WallpaperBuilder";
-import type { ScheduleEntry } from "@/types/schedule";
-import type { WallpaperDesign } from "@/types/wallpaper";
-
-const sampleEntries: ScheduleEntry[] = [
-  {
-    id: "sample-cs113",
-    subjectCode: "CS 113",
-    description: "Automata and Language Theory",
-    section: "BSCS 4-A-SOUTH",
-    day: "Thursday",
-    startTime: "18:30",
-    endTime: "21:30",
-    location: "COMLAB 3-S",
-    mode: "onsite",
-  },
-  {
-    id: "sample-cs118-friday",
-    subjectCode: "CS 118",
-    description: "CS Thesis Writing 1",
-    section: "BSCS 4-A-SOUTH",
-    day: "Friday",
-    startTime: "18:30",
-    endTime: "21:30",
-    location: "ONLINE",
-    mode: "online",
-  },
-  {
-    id: "sample-cs118-saturday",
-    subjectCode: "CS 118",
-    description: "CS Thesis Writing 1",
-    section: "BSCS 4-A-SOUTH",
-    day: "Saturday",
-    startTime: "10:30",
-    endTime: "12:30",
-    location: "ONLINE",
-    mode: "online",
-  },
-];
-
-const defaultDesign: WallpaperDesign = {
-  devicePreset: "phone-portrait",
-  template: "minimal-light",
-  backgroundColor: "#f9f5f1",
-  accentColor: "#7c35de",
-  blur: 0,
-  darkOverlay: 0,
-  fontSize: 36,
-  showDescription: true,
-  showRoom: true,
-  showInstructor: false,
-  showEmptyDays: true,
-  timeFormat: "12h",
-};
+import {
+  defaultWallpaperDesign,
+  sampleScheduleEntries,
+} from "@/lib/schedule/sample-schedule";
 
 export default function CustomizePage() {
   return (
@@ -74,7 +25,10 @@ export default function CustomizePage() {
           </div>
         </div>
 
-        <WallpaperBuilder entries={sampleEntries} initialDesign={defaultDesign} />
+        <WallpaperBuilder
+          entries={sampleScheduleEntries}
+          initialDesign={defaultWallpaperDesign}
+        />
       </div>
     </main>
   );

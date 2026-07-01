@@ -1,54 +1,34 @@
 "use client";
 
-import type { FormEvent } from "react";
-
 import { DAYS, type ScheduleEntry } from "@/types/schedule";
 
 type ScheduleEntryFormProps = {
-  entry?: ScheduleEntry;
-  onSubmit?: (entry: ScheduleEntry) => void;
+  entry: ScheduleEntry;
+  conflictMessage?: string;
+  onChange: (entry: ScheduleEntry) => void;
+  onDelete: (id: string) => void;
+  onDuplicate: (entry: ScheduleEntry) => void;
 };
 
-const emptyEntry: ScheduleEntry = {
-  id: "draft-entry",
-  subjectCode: "",
-  description: "",
-  day: "Monday",
-  startTime: "07:30",
-  endTime: "08:30",
-  location: "",
-  section: "",
-};
-
-export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
-  const currentEntry = entry ?? emptyEntry;
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-
-    onSubmit?.({
-      id: currentEntry.id,
-      subjectCode: String(formData.get("subjectCode") ?? ""),
-      description: String(formData.get("description") ?? ""),
-      day: String(formData.get("day") ?? "Monday") as ScheduleEntry["day"],
-      startTime: String(formData.get("startTime") ?? ""),
-      endTime: String(formData.get("endTime") ?? ""),
-      location: String(formData.get("location") ?? ""),
-      section: String(formData.get("section") ?? ""),
-    });
+export function ScheduleEntryForm({
+  entry,
+  conflictMessage,
+  onChange,
+  onDelete,
+  onDuplicate,
+}: ScheduleEntryFormProps) {
+  function updateEntry(patch: Partial<ScheduleEntry>) {
+    onChange({ ...entry, ...patch });
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="soft-panel grid gap-4 p-4 sm:grid-cols-2"
-    >
+    <article className="soft-panel grid gap-4 p-4 sm:grid-cols-2">
       <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
         Subject code
         <input
           name="subjectCode"
-          defaultValue={currentEntry.subjectCode}
+          value={entry.subjectCode}
+          onChange={(event) => updateEntry({ subjectCode: event.currentTarget.value })}
           className="field-shell"
         />
       </label>
@@ -56,7 +36,8 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
         Description
         <input
           name="description"
-          defaultValue={currentEntry.description}
+          value={entry.description}
+          onChange={(event) => updateEntry({ description: event.currentTarget.value })}
           className="field-shell"
         />
       </label>
@@ -64,7 +45,10 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
         Day
         <select
           name="day"
-          defaultValue={currentEntry.day}
+          value={entry.day}
+          onChange={(event) =>
+            updateEntry({ day: event.currentTarget.value as ScheduleEntry["day"] })
+          }
           className="field-shell"
         >
           {DAYS.map((day) => (
@@ -78,7 +62,8 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
           <input
             name="startTime"
             type="time"
-            defaultValue={currentEntry.startTime}
+            value={entry.startTime}
+            onChange={(event) => updateEntry({ startTime: event.currentTarget.value })}
             className="field-shell"
           />
         </label>
@@ -87,7 +72,8 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
           <input
             name="endTime"
             type="time"
-            defaultValue={currentEntry.endTime}
+            value={entry.endTime}
+            onChange={(event) => updateEntry({ endTime: event.currentTarget.value })}
             className="field-shell"
           />
         </label>
@@ -96,7 +82,13 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
         Location
         <input
           name="location"
-          defaultValue={currentEntry.location}
+          value={entry.location ?? ""}
+          onChange={(event) =>
+            updateEntry({
+              location: event.currentTarget.value,
+              mode: /online/i.test(event.currentTarget.value) ? "online" : "onsite",
+            })
+          }
           className="field-shell"
         />
       </label>
@@ -104,15 +96,34 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
         Section
         <input
           name="section"
-          defaultValue={currentEntry.section}
+          value={entry.section ?? ""}
+          onChange={(event) => updateEntry({ section: event.currentTarget.value })}
           className="field-shell"
         />
       </label>
-      <div className="sm:col-span-2">
-        <button className="button-primary px-4 py-2">
-          Save entry
+
+      {conflictMessage ? (
+        <p className="rounded-2xl border border-[#ffd55d] bg-[#fff7d6] px-3 py-2 text-sm font-bold text-[#6e5a12] sm:col-span-2">
+          {conflictMessage}
+        </p>
+      ) : null}
+
+      <div className="flex flex-wrap gap-3 sm:col-span-2">
+        <button
+          type="button"
+          className="button-secondary px-4 py-2 text-sm"
+          onClick={() => onDuplicate(entry)}
+        >
+          Duplicate meeting
+        </button>
+        <button
+          type="button"
+          className="rounded-full border border-[#ffb7b7] bg-white px-4 py-2 text-sm font-bold text-[#8a2a2a] hover:bg-[#fff1f1]"
+          onClick={() => onDelete(entry.id)}
+        >
+          Delete entry
         </button>
       </div>
-    </form>
+    </article>
   );
 }
