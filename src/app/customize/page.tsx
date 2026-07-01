@@ -1,9 +1,7 @@
 import Link from "next/link";
 
 import { AppNav } from "@/components/app/AppNav";
-import { WeeklyGrid } from "@/components/schedule/WeeklyGrid";
-import { WallpaperControls } from "@/components/wallpaper/WallpaperControls";
-import { WallpaperPreview } from "@/components/wallpaper/WallpaperPreview";
+import { WallpaperBuilder } from "@/components/wallpaper/WallpaperBuilder";
 import type { ScheduleEntry } from "@/types/schedule";
 import type { WallpaperDesign } from "@/types/wallpaper";
 
@@ -74,18 +72,9 @@ export default function CustomizePage() {
               templates, and a sharp PNG export path.
             </p>
           </div>
-          <button className="button-primary px-4 py-3">
-            Download PNG
-          </button>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
-          <WallpaperControls design={defaultDesign} />
-          <div className="space-y-6">
-            <WallpaperPreview entries={sampleEntries} design={defaultDesign} />
-            <WeeklyGrid entries={sampleEntries} />
-          </div>
-        </div>
+        <WallpaperBuilder entries={sampleEntries} initialDesign={defaultDesign} />
       </div>
     </main>
   );

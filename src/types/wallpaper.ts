@@ -14,6 +14,8 @@ export type DevicePresetId = keyof typeof DEVICE_PRESETS;
 
 export type WallpaperTemplate = "minimal-light" | "minimal-dark" | "ucc-inspired";
 
+export type WallpaperExportFormat = "image/png" | "image/jpeg";
+
 export type WallpaperDesign = {
   devicePreset: DevicePresetId;
   template: WallpaperTemplate;

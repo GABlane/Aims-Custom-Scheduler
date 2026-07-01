@@ -4,9 +4,53 @@ import type { WallpaperDesign } from "@/types/wallpaper";
 
 type WallpaperControlsProps = {
   design: WallpaperDesign;
+  onChange: (design: WallpaperDesign) => void;
 };
 
-export function WallpaperControls({ design }: WallpaperControlsProps) {
+const templateDefaults: Record<
+  WallpaperDesign["template"],
+  Pick<WallpaperDesign, "backgroundColor" | "accentColor">
+> = {
+  "minimal-light": {
+    backgroundColor: "#f5f2ed",
+    accentColor: "#7c35de",
+  },
+  "minimal-dark": {
+    backgroundColor: "#1f2420",
+    accentColor: "#a553ed",
+  },
+  "ucc-inspired": {
+    backgroundColor: "#f7fbf4",
+    accentColor: "#287a4b",
+  },
+};
+
+export function WallpaperControls({ design, onChange }: WallpaperControlsProps) {
+  function updateDesign(patch: Partial<WallpaperDesign>) {
+    onChange({ ...design, ...patch });
+  }
+
+  function updateCustomDimension(
+    key: "width" | "height",
+    value: number,
+  ) {
+    onChange({
+      ...design,
+      customDimensions: {
+        width: design.customDimensions?.width ?? 1080,
+        height: design.customDimensions?.height ?? 1920,
+        [key]: value,
+      },
+    });
+  }
+
+  function updateTemplate(template: WallpaperDesign["template"]) {
+    updateDesign({
+      template,
+      ...templateDefaults[template],
+    });
+  }
+
   return (
     <aside className="soft-panel space-y-5 p-5">
       <div>
@@ -19,7 +63,12 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
       <label className="block space-y-2 text-sm font-bold text-[var(--ink)]">
         Device
         <select
-          defaultValue={design.devicePreset}
+          value={design.devicePreset}
+          onChange={(event) =>
+            updateDesign({
+              devicePreset: event.currentTarget.value as WallpaperDesign["devicePreset"],
+            })
+          }
           className="field-shell"
         >
           <option value="phone-portrait">Phone portrait</option>
@@ -33,7 +82,10 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
       <label className="block space-y-2 text-sm font-bold text-[var(--ink)]">
         Theme
         <select
-          defaultValue={design.template}
+          value={design.template}
+          onChange={(event) =>
+            updateTemplate(event.currentTarget.value as WallpaperDesign["template"])
+          }
           className="field-shell"
         >
           <option value="minimal-light">Minimal light</option>
@@ -42,12 +94,46 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
         </select>
       </label>
 
+      {design.devicePreset === "custom" ? (
+        <div className="grid grid-cols-2 gap-3">
+          <label className="space-y-2 text-sm font-bold text-[var(--ink)]">
+            Width
+            <input
+              type="number"
+              min="320"
+              max="7680"
+              value={design.customDimensions?.width ?? 1080}
+              onChange={(event) =>
+                updateCustomDimension("width", Number(event.currentTarget.value))
+              }
+              className="field-shell"
+            />
+          </label>
+          <label className="space-y-2 text-sm font-bold text-[var(--ink)]">
+            Height
+            <input
+              type="number"
+              min="320"
+              max="7680"
+              value={design.customDimensions?.height ?? 1920}
+              onChange={(event) =>
+                updateCustomDimension("height", Number(event.currentTarget.value))
+              }
+              className="field-shell"
+            />
+          </label>
+        </div>
+      ) : null}
+
       <div className="grid grid-cols-2 gap-3">
         <label className="space-y-2 text-sm font-bold text-[var(--ink)]">
           Background
           <input
             type="color"
-            defaultValue={design.backgroundColor}
+            value={design.backgroundColor}
+            onChange={(event) =>
+              updateDesign({ backgroundColor: event.currentTarget.value })
+            }
             className="h-10 w-full rounded-md border border-[var(--line)]"
           />
         </label>
@@ -55,7 +141,10 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
           Accent
           <input
             type="color"
-            defaultValue={design.accentColor}
+            value={design.accentColor}
+            onChange={(event) =>
+              updateDesign({ accentColor: event.currentTarget.value })
+            }
             className="h-10 w-full rounded-md border border-[var(--line)]"
           />
         </label>
@@ -67,9 +156,28 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
           type="range"
           min="24"
           max="52"
-          defaultValue={design.fontSize}
+          value={design.fontSize}
+          onChange={(event) =>
+            updateDesign({ fontSize: Number(event.currentTarget.value) })
+          }
           className="w-full accent-[var(--purple)]"
         />
+      </label>
+
+      <label className="block space-y-2 text-sm font-bold text-[var(--ink)]">
+        Time format
+        <select
+          value={design.timeFormat}
+          onChange={(event) =>
+            updateDesign({
+              timeFormat: event.currentTarget.value as WallpaperDesign["timeFormat"],
+            })
+          }
+          className="field-shell"
+        >
+          <option value="12h">12-hour</option>
+          <option value="24h">24-hour</option>
+        </select>
       </label>
 
       <div className="space-y-3 text-sm font-bold text-[var(--ink)]">
@@ -82,7 +190,12 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
             <input
               type="checkbox"
               name={String(name)}
-              defaultChecked={Boolean(checked)}
+              checked={Boolean(checked)}
+              onChange={(event) =>
+                updateDesign({
+                  [String(name)]: event.currentTarget.checked,
+                } as Partial<WallpaperDesign>)
+              }
               className="h-4 w-4 accent-[var(--purple)]"
             />
             {label}
