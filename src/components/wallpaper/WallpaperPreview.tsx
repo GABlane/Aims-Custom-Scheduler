@@ -8,16 +8,16 @@ type WallpaperPreviewProps = {
 
 export function WallpaperPreview({ entries, design }: WallpaperPreviewProps) {
   return (
-    <section className="rounded-lg border border-[#d6dfd0] bg-white p-5 shadow-sm">
+    <section className="soft-panel p-5">
       <div
-        className="mx-auto flex aspect-[9/16] max-h-[720px] min-h-[560px] w-full max-w-sm flex-col overflow-hidden rounded-md p-6 text-[#172019]"
+        className="mx-auto flex aspect-[9/16] max-h-[720px] min-h-[560px] w-full max-w-sm flex-col overflow-hidden rounded-md p-6 text-[var(--ink)]"
         style={{ backgroundColor: design.backgroundColor }}
       >
         <header className="border-b border-black/10 pb-4">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em]">
+          <p className="text-sm font-bold uppercase tracking-[0.12em] text-[var(--purple)]">
             Weekly Schedule
           </p>
-          <h2 className="mt-2 text-3xl font-semibold">BSCS 4-A</h2>
+          <h2 className="display-serif mt-2 text-3xl">BSCS 4-A</h2>
         </header>
 
         <div className="grid flex-1 content-start gap-3 py-5">
@@ -31,10 +31,12 @@ export function WallpaperPreview({ entries, design }: WallpaperPreviewProps) {
                 <div>
                   <p className="font-semibold">{entry.subjectCode}</p>
                   {design.showDescription ? (
-                    <p className="text-sm text-[#586457]">{entry.description}</p>
+                    <p className="text-sm text-[var(--muted)]">
+                      {entry.description}
+                    </p>
                   ) : null}
                 </div>
-                <p className="text-right text-xs font-semibold text-[#586457]">
+                <p className="text-right text-xs font-bold text-[var(--purple)]">
                   {entry.day.slice(0, 3)}
                 </p>
               </div>
@@ -42,7 +44,7 @@ export function WallpaperPreview({ entries, design }: WallpaperPreviewProps) {
                 {entry.startTime}-{entry.endTime}
               </p>
               {design.showRoom && entry.location ? (
-                <p className="text-xs text-[#586457]">{entry.location}</p>
+                <p className="text-xs text-[var(--muted)]">{entry.location}</p>
               ) : null}
             </article>
           ))}

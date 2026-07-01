@@ -21,15 +21,15 @@ function formatTime(value: string) {
 
 export function WeeklyGrid({ entries }: WeeklyGridProps) {
   return (
-    <section className="overflow-hidden rounded-lg border border-[#d6dfd0] bg-white shadow-sm">
-      <div className="grid border-b border-[#d6dfd0] bg-[#eff4eb] text-sm font-semibold text-[#334033] sm:grid-cols-7">
+    <section className="soft-panel overflow-hidden">
+      <div className="grid border-b border-[var(--line)] bg-[#efe3ff] text-sm font-bold text-[var(--purple)] sm:grid-cols-7">
         {DAYS.map((day) => (
-          <div key={day} className="border-[#d6dfd0] px-3 py-2 sm:border-r">
+          <div key={day} className="border-[var(--line)] px-3 py-2 sm:border-r">
             {day.slice(0, 3)}
           </div>
         ))}
       </div>
-      <div className="grid min-h-80 gap-px bg-[#d6dfd0] sm:grid-cols-7">
+      <div className="grid min-h-80 gap-px bg-[var(--line)] sm:grid-cols-7">
         {DAYS.map((day) => {
           const dayEntries = entries.filter((entry) => entry.day === day);
 
@@ -40,7 +40,7 @@ export function WeeklyGrid({ entries }: WeeklyGridProps) {
                   dayEntries.map((entry) => (
                     <article
                       key={entry.id}
-                      className="rounded-md bg-[#1f6d4a] p-3 text-white"
+                      className="rounded-md bg-[var(--purple)] p-3 text-white"
                     >
                       <p className="font-semibold">{entry.subjectCode}</p>
                       <p className="text-sm opacity-90">{entry.description}</p>
@@ -53,7 +53,7 @@ export function WeeklyGrid({ entries }: WeeklyGridProps) {
                     </article>
                   ))
                 ) : (
-                  <p className="text-sm text-[#8a9487]">No classes</p>
+                  <p className="text-sm text-[var(--muted)]">No classes</p>
                 )}
               </div>
             </div>

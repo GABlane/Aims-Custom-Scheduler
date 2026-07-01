@@ -34,7 +34,7 @@ export function ScheduleReview() {
       {reviewEntries.map((entry) => (
         <div key={entry.id} className="space-y-3">
           {entry.confidence && entry.confidence < 0.8 ? (
-            <p className="rounded-md border border-[#d7bd69] bg-[#fff7d6] px-3 py-2 text-sm font-medium text-[#6e5a12]">
+            <p className="rounded-2xl border border-[#ffd55d] bg-[#fff7d6] px-3 py-2 text-sm font-bold text-[#6e5a12]">
               Please verify this entry before export.
             </p>
           ) : null}
@@ -43,13 +43,13 @@ export function ScheduleReview() {
       ))}
 
       <div className="flex flex-wrap gap-3">
-        <button className="rounded-md border border-[#bfcabb] bg-white px-4 py-2 font-semibold text-[#263127] hover:bg-[#e9eee4]">
+        <button className="button-secondary px-4 py-2">
           Add subject
         </button>
-        <button className="rounded-md border border-[#bfcabb] bg-white px-4 py-2 font-semibold text-[#263127] hover:bg-[#e9eee4]">
+        <button className="button-secondary px-4 py-2">
           Add another meeting
         </button>
-        <button className="rounded-md border border-[#bfcabb] bg-white px-4 py-2 font-semibold text-[#263127] hover:bg-[#e9eee4]">
+        <button className="button-secondary px-4 py-2">
           Merge duplicate
         </button>
       </div>

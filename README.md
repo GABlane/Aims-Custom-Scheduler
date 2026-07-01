@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AIMS Custom Scheduler
 
-## Getting Started
+## Project Context
 
-First, run the development server:
+AIMS Custom Scheduler is a client-side web app for turning a UCC/AIMS class schedule screenshot into a clean, customizable phone or desktop wallpaper.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The reason for the project is simple: I want an easy way to customize your schedule because the schedule from UCC feels outdated.
+
+## Current MVP Direction
+
+- Paste or upload an AIMS schedule screenshot.
+- Crop the upper subject table.
+- Run client-side OCR later with Tesseract.js.
+- Parse schedule text into editable class entries.
+- Let the student review and fix OCR mistakes.
+- Customize a wallpaper layout.
+- Download the final PNG.
+
+## Tech Stack
+
+- TypeScript
+- Next.js App Router
+- React
+- Tailwind CSS
+- Browser Canvas planned for image processing and export
+- Tesseract.js planned for OCR
+- LocalStorage planned for local draft saving
+- Vercel planned for hosting
+
+## Theme Direction
+
+The visual direction is based on the Rewind-style AI/productivity landing page reference described from Landingfolio and an archived 2023 Rewind capture, especially:
+
+- soft pastel backgrounds
+- editorial serif headings
+- rounded oversized content sections
+- large lightweight product mockups
+- minimal centered-logo navigation
+- repeated pill-shaped conversion CTAs
+- alternating neutral, pale blue, lavender, and dark green sections
+- purple gradient primary buttons
+
+Approximate palette:
+
+- Main page background: `#F5F2ED`
+- White cards: `#FFFFFF`
+- Primary text: `#48413F`
+- Body text: `#817B78`
+- Muted text: `#A39D98`
+- Pink hero tint: `#F9E8F0`
+- Lavender tint: `#EEE8F4`
+- Pale blue section: `#E7EEF2`
+- Dark privacy green: `#3E5345`
+- Primary purple: `#7C35DE`
+- Purple highlight: `#A553ED`
+- Light border: `#E4DFDA`
+
+The core landing-page UX sequence should be:
+
+```text
+Promise
+-> Product demonstration
+-> Authority
+-> Simple explanation
+-> Feature proof
+-> User outcomes
+-> Privacy reassurance
+-> Emotional benefits
+-> Final CTA
+-> Objection handling
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Rewind, Landingfolio, and any archived screenshots are design references only. Do not copy Rewind's logo, assets, screenshots, product copy, or exact layouts.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## MVP Boundaries
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The MVP stays fully client-side. It should not include accounts, AIMS login, cloud screenshot storage, admin dashboards, direct scraping, or automatic calendar sync.
 
-## Learn More
+Original screenshots should not be stored by default because they may contain student information.
 
-To learn more about Next.js, take a look at the following resources:
+## Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the app locally:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm dev
+```
 
-## Deploy on Vercel
+Run checks:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+CI=true pnpm lint
+CI=true pnpm exec tsc --noEmit
+CI=true pnpm build
+```

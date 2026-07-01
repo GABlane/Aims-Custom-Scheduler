@@ -42,30 +42,30 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-4 rounded-lg border border-[#d6dfd0] bg-white p-4 shadow-sm sm:grid-cols-2"
+      className="soft-panel grid gap-4 p-4 sm:grid-cols-2"
     >
-      <label className="space-y-1 text-sm font-medium text-[#334033]">
+      <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
         Subject code
         <input
           name="subjectCode"
           defaultValue={currentEntry.subjectCode}
-          className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+          className="field-shell"
         />
       </label>
-      <label className="space-y-1 text-sm font-medium text-[#334033]">
+      <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
         Description
         <input
           name="description"
           defaultValue={currentEntry.description}
-          className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+          className="field-shell"
         />
       </label>
-      <label className="space-y-1 text-sm font-medium text-[#334033]">
+      <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
         Day
         <select
           name="day"
           defaultValue={currentEntry.day}
-          className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+          className="field-shell"
         >
           {DAYS.map((day) => (
             <option key={day}>{day}</option>
@@ -73,43 +73,43 @@ export function ScheduleEntryForm({ entry, onSubmit }: ScheduleEntryFormProps) {
         </select>
       </label>
       <div className="grid grid-cols-2 gap-3">
-        <label className="space-y-1 text-sm font-medium text-[#334033]">
+        <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
           Start
           <input
             name="startTime"
             type="time"
             defaultValue={currentEntry.startTime}
-            className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+            className="field-shell"
           />
         </label>
-        <label className="space-y-1 text-sm font-medium text-[#334033]">
+        <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
           End
           <input
             name="endTime"
             type="time"
             defaultValue={currentEntry.endTime}
-            className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+            className="field-shell"
           />
         </label>
       </div>
-      <label className="space-y-1 text-sm font-medium text-[#334033]">
+      <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
         Location
         <input
           name="location"
           defaultValue={currentEntry.location}
-          className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+          className="field-shell"
         />
       </label>
-      <label className="space-y-1 text-sm font-medium text-[#334033]">
+      <label className="space-y-1 text-sm font-bold text-[var(--ink)]">
         Section
         <input
           name="section"
           defaultValue={currentEntry.section}
-          className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+          className="field-shell"
         />
       </label>
       <div className="sm:col-span-2">
-        <button className="rounded-md bg-[#1f6d4a] px-4 py-2 font-semibold text-white hover:bg-[#18583c]">
+        <button className="button-primary px-4 py-2">
           Save entry
         </button>
       </div>

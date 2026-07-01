@@ -7,7 +7,7 @@ type ImageCropperProps = {
 export function ImageCropper({ imageUrl }: ImageCropperProps) {
   return (
     <section className="space-y-5">
-      <div className="aspect-[4/3] overflow-hidden rounded-lg border border-[#d6dfd0] bg-white shadow-sm">
+      <div className="soft-panel aspect-[4/3] overflow-hidden">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -16,7 +16,7 @@ export function ImageCropper({ imageUrl }: ImageCropperProps) {
             className="h-full w-full object-contain"
           />
         ) : (
-          <div className="flex h-full items-center justify-center px-6 text-center text-[#6b7568]">
+          <div className="flex h-full items-center justify-center bg-[var(--cream)] px-6 text-center text-[var(--muted)]">
             The selected screenshot preview will appear here.
           </div>
         )}
@@ -26,7 +26,11 @@ export function ImageCropper({ imageUrl }: ImageCropperProps) {
         {["Crop", "Rotate", "Zoom", "Reset", "Continue"].map((label) => (
           <button
             key={label}
-            className="rounded-md border border-[#bfcabb] bg-white px-3 py-2 text-sm font-semibold text-[#263127] hover:bg-[#e9eee4]"
+            className={
+              label === "Continue"
+                ? "button-primary px-3 py-2 text-sm"
+                : "button-secondary px-3 py-2 text-sm"
+            }
           >
             {label}
           </button>

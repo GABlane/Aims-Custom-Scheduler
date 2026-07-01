@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AppNav } from "@/components/app/AppNav";
 import { WeeklyGrid } from "@/components/schedule/WeeklyGrid";
 import { WallpaperControls } from "@/components/wallpaper/WallpaperControls";
 import { WallpaperPreview } from "@/components/wallpaper/WallpaperPreview";
@@ -45,8 +46,8 @@ const sampleEntries: ScheduleEntry[] = [
 const defaultDesign: WallpaperDesign = {
   devicePreset: "phone-portrait",
   template: "minimal-light",
-  backgroundColor: "#f7f8f5",
-  accentColor: "#1f6d4a",
+  backgroundColor: "#f9f5f1",
+  accentColor: "#7c35de",
   blur: 0,
   darkOverlay: 0,
   fontSize: 36,
@@ -59,20 +60,21 @@ const defaultDesign: WallpaperDesign = {
 
 export default function CustomizePage() {
   return (
-    <main className="min-h-screen bg-[#f7f8f5] px-5 py-8 text-[#172019] sm:px-8">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <div className="flex flex-col gap-4 border-b border-[#dfe5d8] pb-6 sm:flex-row sm:items-end sm:justify-between">
+    <main className="page-bg">
+      <div className="app-shell max-w-7xl space-y-8">
+        <AppNav actionHref="/import" actionLabel="New import" />
+        <div className="flex flex-col gap-4 pb-2 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
-            <Link href="/review" className="text-sm font-semibold text-[#1f6d4a]">
+            <Link href="/review" className="text-sm font-bold text-[var(--purple)]">
               Back to review
             </Link>
-            <h1 className="text-3xl font-semibold">Customize wallpaper</h1>
-            <p className="max-w-2xl leading-7 text-[#586457]">
+            <h1 className="text-4xl">Customize wallpaper</h1>
+            <p className="muted-copy max-w-2xl leading-7">
               The first version starts with phone and desktop presets, two
               templates, and a sharp PNG export path.
             </p>
           </div>
-          <button className="rounded-md bg-[#1f6d4a] px-4 py-3 font-semibold text-white hover:bg-[#18583c]">
+          <button className="button-primary px-4 py-3">
             Download PNG
           </button>
         </div>

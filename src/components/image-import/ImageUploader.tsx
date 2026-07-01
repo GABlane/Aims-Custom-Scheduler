@@ -11,7 +11,7 @@ export function ImageUploader({ onImageSelected }: ImageUploaderProps) {
       <input
         type="file"
         accept="image/png,image/jpeg,image/jpg"
-        className="block w-full cursor-pointer rounded-md border border-[#bfcabb] bg-[#fbfcf9] text-sm file:mr-4 file:border-0 file:bg-[#1f6d4a] file:px-4 file:py-3 file:font-semibold file:text-white hover:file:bg-[#18583c]"
+        className="block w-full cursor-pointer rounded-md border border-[var(--line)] bg-[var(--cream)] text-sm file:mr-4 file:border-0 file:bg-[var(--purple)] file:px-4 file:py-3 file:font-bold file:text-white hover:file:bg-[var(--purple-dark)]"
         onChange={(event) => {
           const file = event.currentTarget.files?.item(0);
           if (file) {

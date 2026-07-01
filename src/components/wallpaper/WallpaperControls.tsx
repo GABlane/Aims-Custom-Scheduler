@@ -8,19 +8,19 @@ type WallpaperControlsProps = {
 
 export function WallpaperControls({ design }: WallpaperControlsProps) {
   return (
-    <aside className="space-y-5 rounded-lg border border-[#d6dfd0] bg-white p-5 shadow-sm">
+    <aside className="soft-panel space-y-5 p-5">
       <div>
-        <h2 className="text-xl font-semibold">Customization</h2>
-        <p className="mt-1 text-sm text-[#586457]">
+        <h2 className="display-serif text-xl">Customization</h2>
+        <p className="muted-copy mt-1 text-sm">
           Starter controls for the first wallpaper generator phase.
         </p>
       </div>
 
-      <label className="block space-y-2 text-sm font-medium text-[#334033]">
+      <label className="block space-y-2 text-sm font-bold text-[var(--ink)]">
         Device
         <select
           defaultValue={design.devicePreset}
-          className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+          className="field-shell"
         >
           <option value="phone-portrait">Phone portrait</option>
           <option value="phone-portrait-modern">Phone portrait modern</option>
@@ -30,11 +30,11 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
         </select>
       </label>
 
-      <label className="block space-y-2 text-sm font-medium text-[#334033]">
+      <label className="block space-y-2 text-sm font-bold text-[var(--ink)]">
         Theme
         <select
           defaultValue={design.template}
-          className="w-full rounded-md border border-[#bfcabb] px-3 py-2"
+          className="field-shell"
         >
           <option value="minimal-light">Minimal light</option>
           <option value="minimal-dark">Minimal dark</option>
@@ -43,36 +43,36 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
       </label>
 
       <div className="grid grid-cols-2 gap-3">
-        <label className="space-y-2 text-sm font-medium text-[#334033]">
+        <label className="space-y-2 text-sm font-bold text-[var(--ink)]">
           Background
           <input
             type="color"
             defaultValue={design.backgroundColor}
-            className="h-10 w-full rounded-md border border-[#bfcabb]"
+            className="h-10 w-full rounded-md border border-[var(--line)]"
           />
         </label>
-        <label className="space-y-2 text-sm font-medium text-[#334033]">
+        <label className="space-y-2 text-sm font-bold text-[var(--ink)]">
           Accent
           <input
             type="color"
             defaultValue={design.accentColor}
-            className="h-10 w-full rounded-md border border-[#bfcabb]"
+            className="h-10 w-full rounded-md border border-[var(--line)]"
           />
         </label>
       </div>
 
-      <label className="block space-y-2 text-sm font-medium text-[#334033]">
+      <label className="block space-y-2 text-sm font-bold text-[var(--ink)]">
         Font size
         <input
           type="range"
           min="24"
           max="52"
           defaultValue={design.fontSize}
-          className="w-full accent-[#1f6d4a]"
+          className="w-full accent-[var(--purple)]"
         />
       </label>
 
-      <div className="space-y-3 text-sm font-medium text-[#334033]">
+      <div className="space-y-3 text-sm font-bold text-[var(--ink)]">
         {[
           ["showDescription", "Show description", design.showDescription],
           ["showRoom", "Show room", design.showRoom],
@@ -83,7 +83,7 @@ export function WallpaperControls({ design }: WallpaperControlsProps) {
               type="checkbox"
               name={String(name)}
               defaultChecked={Boolean(checked)}
-              className="h-4 w-4 accent-[#1f6d4a]"
+              className="h-4 w-4 accent-[var(--purple)]"
             />
             {label}
           </label>
